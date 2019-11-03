@@ -34,7 +34,3 @@ def validation(nick, time):
 def not_repeat(nick, time):
     return (nick, time) not in get_records()
 
-
-if __name__ == '__main__':
-    add_record("Nikita", 1234)
-    print(top_15())
