@@ -1,9 +1,6 @@
 from random import randrange, choice
 from utils.solver import solve_sudoku
 from copy import deepcopy
-from pprint import pprint
-
-DEBUG = False
 
 
 class Grid:
@@ -17,17 +14,6 @@ class Grid:
             ]
             for i in range(n * n)
         ]
-
-        if DEBUG:
-            print("The base table is ready!")
-
-    def show(self):
-        """
-        Отладочная функция. Печатает поле
-        :return: None
-        """
-        for row in self.table:
-            print(row)
 
     def transposing(self):
         """ Транспонирование таблицы """
@@ -65,7 +51,7 @@ class Grid:
         # получение случайного района
 
         area2 = randrange(0, self.n, 1)
-        # ещё район, но не такой же самый
+        # ещё район, но не тот же самый
         while area1 == area2:
             area2 = randrange(0, self.n, 1)
 
@@ -111,11 +97,6 @@ def generate(n=3) -> list:
     ]
     difficult = grid.n ** 4  # Первоначально все элементы на месте
 
-    if DEBUG:
-        grid.show()
-        print("---------------------------")
-
-    # TODO: Добавить возможность указывать сложность
     iterator = grid.n ** 4 - 30
 
     while iterator < grid.n ** 4:
@@ -137,12 +118,5 @@ def generate(n=3) -> list:
                 grid.table[i][j] = temp
                 difficult += 1  # Облегчаем
 
-    if DEBUG:
-        grid.show()
-        print("difficult = ", difficult)
-
     return grid.table
 
-
-if __name__ == '__main__':
-    pprint(generate())

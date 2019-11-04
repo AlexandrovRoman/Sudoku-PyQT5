@@ -1,9 +1,11 @@
 from PyQt5.QtGui import QFont
 from PyQt5.QtWidgets import QDialog, QGridLayout, QPushButton, QLabel
-from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5 import QtCore, QtWidgets
 
 
 class Ui_MainWindow(object):
+    """ В данном классе я не менял почти ничего,
+    за исключением преобразования кнопок из отдельных переменных в массив """
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("Sudoku")
         MainWindow.resize(339, 418)
@@ -98,6 +100,7 @@ class Ui_MainWindow(object):
 
 
 class Digits(QDialog):
+    """ Класс Digit - диалоговое окно получающее от пользователя цифру. Сделан по макету Alphabet """
     def __init__(self, *args):
         super().__init__(*args)
 

@@ -2,7 +2,7 @@ from threading import Timer
 
 
 class InfiniteTimer:
-    """A Timer class that does not stop, unless you want it to."""
+    """ Класс таймера который не останавливается, пока вы этоо не захотите """
 
     def __init__(self, seconds, target):
         self._should_continue = False
@@ -12,36 +12,35 @@ class InfiniteTimer:
         self.thread = None
 
     def _handle_target(self):
+        """ Запуск переданной функции """
         self.is_running = True
         self.target()
         self.is_running = False
         self._start_timer()
 
     def _start_timer(self):
-        if self._should_continue:  # Code could have been running when cancel was called.
+        """ Запуск таймера (вспомогательная функция) """
+        if self._should_continue:  # Если таймер работает
             self.thread = Timer(self.seconds, self._handle_target)
             self.thread.start()
 
     def start(self):
+        """ Запуск таймера """
         if not self._should_continue and not self.is_running:
             self._should_continue = True
             self._start_timer()
-        else:
-            print("Timer already started or running, please wait if you're restarting.")
 
     def cancel(self):
+        """ Остановка таймера """
         if self.thread is not None:
-            self._should_continue = False  # Just in case thread is running and cancel fails.
+            self._should_continue = False  # Отменить выполнение работы в любом случаее
             self.thread.cancel()
-        else:
-            print("Timer never started or failed to initialize.")
 
 
 if __name__ == '__main__':
-    def tick():
-        print('Worked')
+    def hello():
+        print("Hello world!")
 
 
-    # Example Usage
-    t = InfiniteTimer(0.5, tick)
+    t = InfiniteTimer(0.5, hello)
     t.start()
