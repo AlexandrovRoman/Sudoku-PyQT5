@@ -4,8 +4,10 @@ from PyQt5 import QtCore, QtWidgets
 
 
 class Ui_MainWindow(object):
-    """ В данном классе я не менял почти ничего,
-    за исключением преобразования кнопок из отдельных переменных в массив """
+    """ Главное окно.
+        Основные изменения:
+        сделал из кнопок массив,
+        переименовал переменные """
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("Sudoku")
         MainWindow.resize(339, 418)
@@ -44,14 +46,17 @@ class Ui_MainWindow(object):
 
         self.back_button = QPushButton(self.tab)
         self.back_button.setGeometry(QtCore.QRect(170, 0, 61, 51))
+        self.back_button.setFont(font)
         self.back_button.setObjectName("back_button")
 
         self.next_button = QtWidgets.QPushButton(self.tab)
         self.next_button.setGeometry(QtCore.QRect(250, 0, 61, 51))
+        self.next_button.setFont(font)
         self.next_button.setObjectName("next_button")
 
         self.new_game_button = QtWidgets.QPushButton(self.tab)
         self.new_game_button.setGeometry(QtCore.QRect(10, 0, 71, 51))
+        self.new_game_button.setFont(QFont("Arial", 9))
         self.new_game_button.setObjectName("new_game_button")
 
         self.tabWidget.addTab(self.tab, "")
@@ -89,7 +94,6 @@ class Ui_MainWindow(object):
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "Судоку"))
-        self.time_label.setText('Time\nTo\nWin')
         self.back_button.setText(_translate("MainWindow", "↶"))
         self.next_button.setText(_translate("MainWindow", "↷"))
         self.new_game_button.setText(_translate("MainWindow", "Новая игра"))

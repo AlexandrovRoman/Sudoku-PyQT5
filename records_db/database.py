@@ -25,7 +25,8 @@ def get_records():
 def add_record(nick, time):
     """ Добавляем рекорд в базу """
     # Проверка на корректность
-    if not validation(nick, time) or not not_repeat(nick, time): return
+    if not validation(nick, time) or not not_repeat(nick, time):
+        return
     with sqlite3.connect("records_db/records.db") as con:
         con.execute(f"""
             INSERT INTO Records(NickName, Time) VALUES(?, ?)

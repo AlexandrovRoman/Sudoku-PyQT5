@@ -5,7 +5,7 @@ from GUI.win_true import WinDialog
 from utils.sudoku_generator import generate
 from utils.solver import solve_sudoku
 from CallFunc.Call import InfiniteTimer
-from records_db.database import add_record, top_15
+from records_db.database import add_record, top
 
 
 class Sudoku(QtWidgets.QMainWindow, Ui_MainWindow):
@@ -67,13 +67,14 @@ class Sudoku(QtWidgets.QMainWindow, Ui_MainWindow):
     def records(self):
         """ Вывод списка лучших игр (топ 15) """
         self.listWidget.clear()  # Отчистка на случай обновления
-        for index, item in enumerate(top_15()):
+        for index, item in enumerate(top(15)):
             QtWidgets.QListWidgetItem(f"{index + 1}. {' - '.join(item)}", self.listWidget)
 
     def set_time(self):
         """ Прибавить секунду ко времени """
         # Время всегда будет меньше часа, т.к. час на судоку... Очень много
-        if self.minutes == self.seconds == 59: return
+        if self.minutes == self.seconds == 59:
+            return
         self.seconds += 1
         if self.seconds == 60:
             self.minutes += 1
@@ -86,13 +87,15 @@ class Sudoku(QtWidgets.QMainWindow, Ui_MainWindow):
         button = self.sender()
         index = self.field.index(button)
         # Если пользователь окончил игру или ячейка не подлежит изменению
-        if self.is_game_over or self.cell_const[index]: return
+        if self.is_game_over or self.cell_const[index]:
+            return
 
         # Создание диалогового окна и получение цифры
         window = Digits()
         window.exec()
         digit = window.num
-        if not digit: return
+        if not digit:
+            return
         button.setText(digit)
 
         # если глубина погружения отличается от стандартной
@@ -116,7 +119,8 @@ class Sudoku(QtWidgets.QMainWindow, Ui_MainWindow):
 
     def next(self):
         """ Следующий ход (кнопка вперед) """
-        if self.is_game_over: return
+        if self.is_game_over:
+            return
         # Если есть значения дальше
         if self.deep_immersion >= 0:
             self.set_field(True)
@@ -124,7 +128,8 @@ class Sudoku(QtWidgets.QMainWindow, Ui_MainWindow):
 
     def back(self):
         """ Предыдуший ход (кнопка назад) """
-        if self.is_game_over: return
+        if self.is_game_over:
+            return
         # Если есть значения до
         if self.deep_immersion < len(self.moves_history) - 1:
             self.deep_immersion += 1
@@ -144,7 +149,8 @@ class Sudoku(QtWidgets.QMainWindow, Ui_MainWindow):
     def result(self):
         """ Проверка резултата """
         # Если не все клетки запонены - выходим
-        if not all(self.field_value): return
+        if not all(self.field_value):
+            return
         if self.field_value != self.solve:
             # Если окно поражения не вызывалось
             if not self.is_fail:
@@ -182,7 +188,8 @@ class Sudoku(QtWidgets.QMainWindow, Ui_MainWindow):
             if self.field_value[i] != self.solve[i]:
                 self.field[i].setStyleSheet("background-color: red")
             else:
-                if not self.cell_const[i]: self.field[i].setStyleSheet("background-color: green")
+                if not self.cell_const[i]:
+                    self.field[i].setStyleSheet("background-color: green")
 
     def closeEvent(self, event):
         """ Закрытие игры (изменено для остановки таймера) """
