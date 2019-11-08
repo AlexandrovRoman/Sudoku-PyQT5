@@ -6,7 +6,10 @@ PASSWORD = "1qazse432"
 
 
 def has_connect() -> bool:
-    return requests.get(URL).status_code == 200
+    try:
+        return requests.get(URL).status_code == 200
+    except requests.exceptions.ConnectionError:
+        return False
 
 
 def top(n: int) -> list:

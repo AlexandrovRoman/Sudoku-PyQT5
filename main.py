@@ -79,9 +79,9 @@ class Sudoku(QtWidgets.QMainWindow, Ui_MainWindow):
             QtWidgets.QListWidgetItem(f"{index + 1}. {' - '.join(item)}", self.listWidget)
 
     def connect_(self):
+        global top, add_record, CONNECT
         if CONNECT:  # Если есть соединение, зачем что-то менять
             return
-        global top, add_record, CONNECT
         top, add_record, CONNECT = connect_db()
         self._set_db_button()
         self.records()
