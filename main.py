@@ -5,7 +5,13 @@ from GUI.win_true import WinDialog
 from utils.sudoku_generator import generate
 from utils.solver import solve_sudoku
 from CallFunc.Call import InfiniteTimer
-from records_db.database import add_record, top
+from records_db.database import connect_db
+
+
+# Заглушки для бд, чтобы реализовать кнопку реконнекта
+top = lambda n: []
+add_record = lambda nick, time: None
+CONNECT = None
 
 
 class Sudoku(QtWidgets.QMainWindow, Ui_MainWindow):
@@ -15,9 +21,11 @@ class Sudoku(QtWidgets.QMainWindow, Ui_MainWindow):
         self.new_game_button.clicked.connect(self.new_game)
         self.next_button.clicked.connect(self.next)
         self.back_button.clicked.connect(self.back)
+        self.connect.clicked.connect(self.connect_)
         self.button_connect()
-        self.new_game()
+        self.connect_()
         self.records()
+        self.new_game()
 
     def button_connect(self):
         """ Привязка всех кнопок """
@@ -39,13 +47,13 @@ class Sudoku(QtWidgets.QMainWindow, Ui_MainWindow):
             button = self.field[i]
             if self.cell_const[i]:
                 style = """
-                           QPushButton { background-color: yellow }
+                           QPushButton { background-color: yellow; }
                            QPushButton:pressed { background-color: red; }
                         """
                 button.setText(str(self.field_value[i]))
             else:
                 style = """
-                           QPushButton { background-color: white }
+                           QPushButton { background-color: white; }
                            QPushButton:hover { background-color: silver; }
                         """
                 button.setText("")
@@ -61,7 +69,7 @@ class Sudoku(QtWidgets.QMainWindow, Ui_MainWindow):
             pass
         # Обнуление количества минут и секунд, запуск таймера
         self.seconds = self.minutes = 0
-        self.timer = InfiniteTimer(1, self.set_time)
+        self.timer = InfiniteTimer(1, self._set_time)
         self.timer.start()
 
     def records(self):
@@ -70,7 +78,25 @@ class Sudoku(QtWidgets.QMainWindow, Ui_MainWindow):
         for index, item in enumerate(top(15)):
             QtWidgets.QListWidgetItem(f"{index + 1}. {' - '.join(item)}", self.listWidget)
 
-    def set_time(self):
+    def connect_(self):
+        if CONNECT:  # Если есть соединение, зачем что-то менять
+            return
+        global top, add_record, CONNECT
+        top, add_record, CONNECT = connect_db()
+        self._set_db_button()
+        self.records()
+
+    def _set_db_button(self):
+        if CONNECT:
+            color = "#00e600"
+            text = "Есть контакт)))"
+        else:
+            color = "#ff2400"
+            text = "Соединение\nотсутствует((("
+        self.connect.setStyleSheet(" QPushButton { background-color: " + color + "; } ")
+        self.connect.setText(text)
+
+    def _set_time(self):
         """ Прибавить секунду ко времени """
         # Время всегда будет меньше часа, т.к. час на судоку... Очень много
         if self.minutes == self.seconds == 59:
@@ -123,7 +149,7 @@ class Sudoku(QtWidgets.QMainWindow, Ui_MainWindow):
             return
         # Если есть значения дальше
         if self.deep_immersion >= 0:
-            self.set_field(True)
+            self._set_field(True)
             self.deep_immersion -= 1
 
     def back(self):
@@ -133,9 +159,9 @@ class Sudoku(QtWidgets.QMainWindow, Ui_MainWindow):
         # Если есть значения до
         if self.deep_immersion < len(self.moves_history) - 1:
             self.deep_immersion += 1
-            self.set_field(False)
+            self._set_field(False)
 
-    def set_field(self, is_next):
+    def _set_field(self, is_next):
         """ Изменяет значение на прошлое лил следующее (is_next) """
         index, *values = self.moves_history[self.deep_immersion]
         # Если следующее - берем current_value (стр. 107) иначе прошлое

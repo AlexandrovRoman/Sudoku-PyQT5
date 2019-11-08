@@ -69,8 +69,14 @@ class Ui_MainWindow(object):
         self.listWidget.setObjectName("listView")
 
         self.best_rounds = QLabel(self.tab_2)
-        self.best_rounds.setGeometry(QtCore.QRect(0, 0, 81, 31))
-        self.best_rounds.setObjectName("label")
+        self.best_rounds.setGeometry(QtCore.QRect(0, 0, 90, 31))
+        self.best_rounds.setFont(QFont("Arial", 9))
+
+        self.tabWidget.addTab(self.tab_2, "")
+
+        self.connect = QPushButton(self.tab_2)
+        self.connect.setGeometry(QtCore.QRect(220, 0, 115, 31))
+        self.connect.setFont(QFont("Arial", 9))
 
         self.tabWidget.addTab(self.tab_2, "")
 
