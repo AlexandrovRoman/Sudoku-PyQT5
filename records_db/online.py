@@ -37,4 +37,4 @@ def add_record(nick: str, time: int) -> None:
 def clear() -> None:
     """ Очистка бд """
     json = {"password": PASSWORD}
-    requests.post(URL, json=json)
+    requests.post(URL + SUDOKU_URL + "clear", json=json)
