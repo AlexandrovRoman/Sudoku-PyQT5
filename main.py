@@ -72,10 +72,10 @@ class Sudoku(QtWidgets.QMainWindow, Ui_MainWindow):
         self.timer.start()
 
     def records(self):
-        """ Вывод списка лучших игр (топ 15) """
+        """ Вывод списка лучших игр (топ 100) """
         self.listWidget.clear()  # Отчистка на случай обновления
         self.server_connection()  # Перепроверяем подключение
-        for index, item in enumerate(top(15)):
+        for index, item in enumerate(top(100)):
             QtWidgets.QListWidgetItem(f"{index + 1}. {' - '.join(item)}", self.listWidget)
 
     def server_connection(self):
