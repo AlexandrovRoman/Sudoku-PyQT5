@@ -23,7 +23,6 @@ class Sudoku(QtWidgets.QMainWindow, Ui_MainWindow):
         self.back_button.clicked.connect(self.back)
         self.connect_button.clicked.connect(self.server_connection)
         self.button_bind()
-        self.server_connection()
         self.records()
         self.new_game()
 
