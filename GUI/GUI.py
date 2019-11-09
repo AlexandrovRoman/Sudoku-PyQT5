@@ -74,9 +74,9 @@ class Ui_MainWindow(object):
 
         self.tabWidget.addTab(self.tab_2, "")
 
-        self.connect = QPushButton(self.tab_2)
-        self.connect.setGeometry(QtCore.QRect(220, 0, 115, 31))
-        self.connect.setFont(QFont("Arial", 9))
+        self.connect_button = QPushButton(self.tab_2)
+        self.connect_button.setGeometry(QtCore.QRect(220, 0, 115, 31))
+        self.connect_button.setFont(QFont("Arial", 9))
 
         self.tabWidget.addTab(self.tab_2, "")
 

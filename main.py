@@ -21,16 +21,16 @@ class Sudoku(QtWidgets.QMainWindow, Ui_MainWindow):
         self.new_game_button.clicked.connect(self.new_game)
         self.next_button.clicked.connect(self.next)
         self.back_button.clicked.connect(self.back)
-        self.connect.clicked.connect(self.connect_)
-        self.button_connect()
-        self.connect_()
+        self.connect_button.clicked.connect(self.server_connection)
+        self.button_bind()
+        self.server_connection()
         self.records()
         self.new_game()
 
-    def button_connect(self):
+    def button_bind(self):
         """ Привязка всех кнопок """
         for button in self.field:
-            button.clicked.connect(self.clicked)
+            button.clicked.connect(self._clicked)
 
     def new_game(self):
         """ Запуск новой игры """
@@ -75,14 +75,17 @@ class Sudoku(QtWidgets.QMainWindow, Ui_MainWindow):
     def records(self):
         """ Вывод списка лучших игр (топ 15) """
         self.listWidget.clear()  # Отчистка на случай обновления
+        self.server_connection()  # Перепроверяем подключение
         for index, item in enumerate(top(15)):
             QtWidgets.QListWidgetItem(f"{index + 1}. {' - '.join(item)}", self.listWidget)
 
-    def connect_(self):
+    def server_connection(self):
         global top, add_record, CONNECT
-        if CONNECT:  # Если есть соединение, зачем что-то менять
+        top, add_record, cur_connect = connect_db()
+        # Если ничего не изменилось выходим из функции
+        if cur_connect == CONNECT:
             return
-        top, add_record, CONNECT = connect_db()
+        CONNECT = cur_connect
         self._set_db_button()
         self.records()
 
@@ -93,8 +96,8 @@ class Sudoku(QtWidgets.QMainWindow, Ui_MainWindow):
         else:
             color = "#ff2400"
             text = "Соединение\nотсутствует((("
-        self.connect.setStyleSheet(" QPushButton { background-color: " + color + "; } ")
-        self.connect.setText(text)
+        self.connect_button.setStyleSheet(" QPushButton { background-color: " + color + "; } ")
+        self.connect_button.setText(text)
 
     def _set_time(self):
         """ Прибавить секунду ко времени """
@@ -108,7 +111,7 @@ class Sudoku(QtWidgets.QMainWindow, Ui_MainWindow):
         self.time_label.setText("0" * (2 - len(str(self.minutes))) + str(self.minutes) + ":" +
                                 "0" * (2 - len(str(self.seconds))) + str(self.seconds))
 
-    def clicked(self):
+    def _clicked(self):
         """ Изменение значения ячейки на которую нажал пользователь """
         button = self.sender()
         index = self.field.index(button)
@@ -137,6 +140,8 @@ class Sudoku(QtWidgets.QMainWindow, Ui_MainWindow):
         self.moves_history.insert(0, (index, self.field_value[index], int(digit)))
 
         self.field_value[index] = int(digit)
+
+        # Меняем цвет ячейки если игра была проиграна и пользователь сделал значение ячейки верным
         if self.is_fail and self.field_value[index] == self.solve[index]:
             button.setStyleSheet("background-color: green")
 
@@ -145,21 +150,19 @@ class Sudoku(QtWidgets.QMainWindow, Ui_MainWindow):
 
     def next(self):
         """ Следующий ход (кнопка вперед) """
-        if self.is_game_over:
+        if self.is_game_over or self.deep_immersion < 0:
             return
         # Если есть значения дальше
-        if self.deep_immersion >= 0:
-            self._set_field(True)
-            self.deep_immersion -= 1
+        self._set_field(True)
+        self.deep_immersion -= 1
 
     def back(self):
         """ Предыдуший ход (кнопка назад) """
-        if self.is_game_over:
+        if self.is_game_over or self.deep_immersion >= len(self.moves_history) - 1:
             return
         # Если есть значения до
-        if self.deep_immersion < len(self.moves_history) - 1:
-            self.deep_immersion += 1
-            self._set_field(False)
+        self.deep_immersion += 1
+        self._set_field(False)
 
     def _set_field(self, is_next):
         """ Изменяет значение на прошлое лил следующее (is_next) """
@@ -167,10 +170,7 @@ class Sudoku(QtWidgets.QMainWindow, Ui_MainWindow):
         # Если следующее - берем current_value (стр. 107) иначе прошлое
         value = values[1] if is_next else values[0]
         self.field_value[index] = value
-        if value != 0:
-            self.field[index].setText(str(value))
-        else:
-            self.field[index].setText("")
+        self.field[index].setText(str(value) if value != 0 else "")
 
     def result(self):
         """ Проверка резултата """
@@ -180,11 +180,11 @@ class Sudoku(QtWidgets.QMainWindow, Ui_MainWindow):
         if self.field_value != self.solve:
             # Если окно поражения не вызывалось
             if not self.is_fail:
-                return self.fail()
+                return self._fail()
         else:
-            return self.win()
+            return self._win()
 
-    def win(self):
+    def _win(self):
         """ Функция успешного завершения игры """
         # Останавливаем таймер и сообщаем о завершении игры
         self.timer.cancel()
@@ -195,6 +195,7 @@ class Sudoku(QtWidgets.QMainWindow, Ui_MainWindow):
             # Поздравление и запись рекорда в бд
             win_dialog = WinDialog()
             if win_dialog.exec_():
+                self.server_connection()
                 add_record(win_dialog.nick, self.minutes * 60 + self.seconds)
                 self.records()
         else:
@@ -202,7 +203,7 @@ class Sudoku(QtWidgets.QMainWindow, Ui_MainWindow):
             win_dialog = QtWidgets.QErrorMessage(self)
             win_dialog.showMessage(f"Победа! Ваше время {self.time_label.text()}")
 
-    def fail(self):
+    def _fail(self):
         """ Поражение """
         self.is_fail = True  # Игра проиграна
 
