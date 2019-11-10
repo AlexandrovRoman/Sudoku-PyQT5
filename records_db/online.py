@@ -32,9 +32,3 @@ def add_record(nick: str, time: int) -> None:
     """ Добавляет ваш рекорд """
     json = {"nick": nick, "time": time, "password": PASSWORD}
     requests.post(URL + SUDOKU_URL + "add", json=json)
-
-
-def clear() -> None:
-    """ Очистка бд """
-    json = {"password": PASSWORD}
-    requests.post(URL + SUDOKU_URL + "clear", json=json)
