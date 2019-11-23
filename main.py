@@ -22,11 +22,11 @@ class Sudoku(QtWidgets.QMainWindow, Ui_MainWindow):
         self.next_button.clicked.connect(self.next)
         self.back_button.clicked.connect(self.back)
         self.connect_button.clicked.connect(self.server_connection)
-        self.button_bind()
+        self._button_bind()
         self.server_connection()
         self.new_game()
 
-    def button_bind(self):
+    def _button_bind(self):
         """ Привязка всех кнопок """
         for button in self.field:
             button.clicked.connect(self._clicked)
