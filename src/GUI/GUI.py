@@ -33,13 +33,13 @@ class Ui_MainWindow(object):
         positions = [(i, j) for i in range(9) for j in range(9)]
 
         font = QFont('Arial', 14)
-        self.field = []
+        self.cells = []
         for position in positions:
             btn = QPushButton()
             btn.setMaximumSize(QtCore.QSize(30, 30))
             btn.setFont(font)
             main_layout.addWidget(btn, *position)
-            self.field.append(btn)
+            self.cells.append(btn)
 
         self.time_label = QLabel(self.tab)
         self.time_label.setGeometry(QtCore.QRect(90, 0, 61, 51))

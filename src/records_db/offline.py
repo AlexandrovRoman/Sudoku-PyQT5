@@ -13,12 +13,13 @@ def top(n):
 
 def get_records():
     """ Получаем отсортированные рекорды """
+    if not has_db():
+        create_db()
     with sqlite3.connect("records_db/records.db") as con:
         cur = con.cursor()
-        result = cur.execute("""
-            SELECT NickName, Time FROM Records
-            ORDER BY Time
-            """).fetchall()
+        result = cur.execute("""SELECT NickName, Time FROM Records
+                                ORDER BY Time
+                                """).fetchall()
     return result
 
 
@@ -27,9 +28,7 @@ def add_record(nick, time):
     # Проверка на корректность
     if not validation(nick, time) or not not_repeat(nick, time): return
     with sqlite3.connect("records_db/records.db") as con:
-        con.execute(f"""
-            INSERT INTO Records(NickName, Time) VALUES(?, ?)
-            """, (nick, time))
+        con.execute(f"""INSERT INTO Records(NickName, Time) VALUES(?, ?)""", (nick, time))
 
 
 def validation(nick, time):
@@ -41,16 +40,15 @@ def not_repeat(nick, time):
 
 
 def has_db():
-    """ Проверка, существует ли база, если нет - создаем """
-    try:
-        sqlite3.connect("records_db/records.db").close()
-    except sqlite3.OperationalError:
-        create()
+    """ Проверка, существует ли бд """
+    with sqlite3.connect("records_db/records.db") as con:
+        result = con.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='Records'").fetchall()
+        return len(result[0]) == 1
 
 
-def create():
+def create_db():
     """ Создание базы данных """
-    from os import mkdir, path
+    from os import mkdir
     command = """CREATE TABLE Records (
                  id       INTEGER PRIMARY KEY AUTOINCREMENT,
                  NickName STRING  NOT NULL,
@@ -58,7 +56,9 @@ def create():
                  );
                  """
     # Создание директории при ее отсутствии
-    if not path.isdir("./records_db"):
+    try:
         mkdir("records_db")
+    except FileExistsError:
+        pass
     with sqlite3.connect("records_db/records.db") as con:
         con.execute(command)
