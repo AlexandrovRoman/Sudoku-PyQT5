@@ -22,8 +22,6 @@ class History:
         # Вставляем в начало массива текущий ход в формате (index, last_value, current_value)
         self._moves_history.insert(0, (index, self._cells_value[index], int(digit)))
 
-        self._cells_value[index] = int(digit)
-
     def next_move(self):
         """ Следующий ход (кнопка вперед) """
         if self._is_game_over or self._deep_immersion < 0:

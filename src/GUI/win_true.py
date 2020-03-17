@@ -3,18 +3,17 @@ from PyQt5 import QtCore
 
 
 class Ui_Dialog(object):
-    def setupUi(self, Form):
-        Form.setObjectName("Form")
+    def setupUi(self, Form, time):
         Form.resize(201, 152)
         verticalLayoutWidget = QWidget(Form)
         verticalLayoutWidget.setGeometry(QtCore.QRect(0, 0, 201, 151))
         verticalLayout = QVBoxLayout(verticalLayoutWidget)
         verticalLayout.setContentsMargins(0, 0, 0, 0)
-        Form.setWindowTitle("Form", "Победа!")
+        Form.setWindowTitle("Победа!")
         congratulation_to_win = QLabel(verticalLayoutWidget)
         congratulation_to_win.setMaximumSize(QtCore.QSize(250, 50))
         congratulation_to_win.setAlignment(QtCore.Qt.AlignCenter)
-        congratulation_to_win.setText("Поздравляем с победой.\n Ваше время:")
+        congratulation_to_win.setText(f"Поздравляем с победой.\n Ваше время: {time}")
         verticalLayout.addWidget(congratulation_to_win)
         input_your_name = QLabel(verticalLayoutWidget)
         input_your_name.setMaximumSize(QtCore.QSize(200, 30))
@@ -34,12 +33,12 @@ class Ui_Dialog(object):
 
 
 class WinDialog(QDialog):
-    def __init__(self):
+    def __init__(self, time):
         super().__init__()
 
         self.nick = None
         self.ui = Ui_Dialog()
-        self.ui.setupUi(self)
+        self.ui.setupUi(self, time)
         self.ui.ok.clicked.connect(self.on_click)
 
     def on_click(self):
