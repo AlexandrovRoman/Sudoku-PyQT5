@@ -1,6 +1,4 @@
 import sys
-from pprint import pprint
-
 from PyQt5 import QtWidgets
 from GUI.GUI import Ui_MainWindow, Digits
 from pyqt_sudoku_utils.game_results import GameResults
@@ -51,7 +49,6 @@ class Sudoku(QtWidgets.QMainWindow, Ui_MainWindow):
         self._cells_value = [cell for row in field for cell in row]
         self._solve = [cell for row in next(solve_sudoku((N, N), field)) for cell in row]
         self._const_cells = [bool(cell) for cell in self._cells_value]
-        self._cells_value = self._solve
 
     def _set_button_style_and_text(self):
         for i in range(len(self.cells)):
