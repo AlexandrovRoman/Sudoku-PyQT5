@@ -1,0 +1,60 @@
+.cwdtable tr:nth-child(2n+1) {
+    background: #f2e4d4;
+}
+
+.cwdtable {
+    font-size:12px;
+    color:#333333;
+    width:30%;
+    border-width: 1px;
+    border-color: #ebab3a;
+    border-collapse: collapse;
+    margin: auto;
+}
+
+.cwdtable th {
+    font-size:12px;
+    background:#ffad4b;
+    border-width: 1px;
+    padding: 8px;
+    border-style: solid;
+    border-color: #ebab3a;
+}
+
+.cwdtable tr {
+    background:#ffffff;
+}
+
+.cwdtable td {
+    font-size:12px;
+    border-width: 1px;
+    padding: 8px;
+    border-style: solid;
+    border-color: #ebab3a;
+}
+
+.mobileTable {
+    overflow:auto;
+    width:100%
+}
+
+.cwdtable th, .cwdtable td {
+    text-align:center
+}
+
+.cwdtable tr:hover {
+    background:#fff8ea;
+}
+
+body {
+    background-color: white;
+}
+.bd-placeholder-img {
+    font-size: 1.125rem;
+    text-anchor: middle;
+}
+@media (min-width: 768px) {
+    .bd-placeholder-img-lg {
+          font-size: 3.5rem;
+    }
+}

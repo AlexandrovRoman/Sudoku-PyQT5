@@ -26,17 +26,15 @@ def get_records():
 def add_record(nick, time):
     """ Добавляем рекорд в базу """
     # Проверка на корректность
-    if not validation(nick, time) or not not_repeat(nick, time): return
+    if not validation(nick, time):
+        return
+
     with sqlite3.connect("records_db/records.db") as con:
         con.execute(f"""INSERT INTO Records(NickName, Time) VALUES(?, ?)""", (nick, time))
 
 
 def validation(nick, time):
     return isinstance(nick, str) and isinstance(time, int)
-
-
-def not_repeat(nick, time):
-    return (nick, time) not in get_records()
 
 
 def has_db():
